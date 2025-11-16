@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>KNZ - Painel</title>
+
+  <style>
+    :root{
+      --bg:#02081a;
+      --panel:#082047;
+      --accent:#3b82f6;
+      --white:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:var(--bg);
+      color:var(--white);
+    }
+
+    .sidebar{
+      position:fixed;
+      left:0; top:0; bottom:0;
+      width:170px;
+      padding:20px;
+      background:#07172a;
+      box-shadow:0 0 30px rgba(59,130,246,0.12);
+    }
+    .sidebar h2{color:var(--accent); margin:0 0 12px;}
+    .sidebar ul{padding:0; list-style:none; color:#bcd7ff;}
+    .sidebar li{margin:12px 0; font-size:14px;}
+
+    .content{margin-left:190px; padding:24px;}
+    .title-box{
+      background:linear-gradient(90deg,#08306b44,#06284444);
+      padding:12px; border-radius:10px;
+      box-shadow:0 0 20px rgba(59,130,246,0.14);
+      color:var(--white);
+    }
+    .panel{
+      margin-top:18px;
+      background:var(--panel);
+      padding:18px;
+      border-radius:16px;
+      box-shadow:0 0 30px rgba(59,130,246,0.12);
+      max-width:420px;
+    }
+
+    .panel h3{margin-top:0; color:var(--accent);}
+    label{display:block; margin:8px 0; font-size:15px;}
+    input[type="range"]{width:100%; margin-top:8px;}
+    #fovValue{margin:6px 0 0; font-size:14px; color:#dbeafe;}
+
+    .btn{
+      margin-top:14px;
+      background:var(--accent);
+      border:none;
+      color:var(--white);
+      padding:10px 18px;
+      border-radius:12px;
+      font-size:15px;
+      width:100%;
+      cursor:pointer;
+    }
+
+    .radio-row{
+      display:flex;
+      justify-content:space-between;
+      margin-top:15px;
+      padding:10px;
+      background:#0c2d5a;
+      border-radius:12px;
+    }
+    .radio-row label{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:15px;
+      cursor:pointer;
+    }
+    input[type="radio"]{
+      width:18px;
+      height:18px;
+      accent-color:var(--accent);
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>3.0</h2>
+    <ul>
+      <li>Configurações</li>
+      <li>Informações</li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="title-box"><h1 style="margin:0;font-size:20px">braiam - Painel</h1></div>
+
+    <div class="panel">
+      <h3>Funções</h3>
+
+      <label><input type="checkbox" id="f1"> aim lock</label>
+      <label><input type="checkbox" id="f2"> esp box</label>
+
+      <p style="margin:10px 0 0">FOV:</p>
+      <input type="range" id="fov" min="10" max="150" value="70">
+      <p id="fovValue">70px</p>
+
+      <!-- DUAS BOLINHAS LADO A LADO -->
+      <div class="radio-row">
+        <label>
+          <input type="radio" name="modo" value="olhar"> Olhar
+        </label>
+        <label>
+          <input type="radio" name="modo" value="atirar"> Ao atirar
+        </label>
+      </div>
+
+      <button class="btn" onclick="enviarConfig()">Abrir free fire</button>
+    </div>
+  </div>
+
+  <script>
+    const fov = document.getElementById('fov');
+    const fovValue = document.getElementById('fovValue');
+    fov.oninput = () => fovValue.textContent = fov.value + 'px';
+
+    function enviarConfig(){
+      const f1 = document.getElementById('f1').checked ? 'on' : 'off';
+      const f2 = document.getElementById('f2').checked ? 'on' : 'off';
+      const fovVal = fov.value;
+
+      const modo = document.querySelector('input[name="modo"]:checked');
+      const modoVal = modo ? modo.value : "nenhum";
+
+      const packageName = "com.dts.freefireth"; // FREE FIRE
+
+      window.location.href =
+        `intent://#Intent;package=${packageName};scheme=config;S.f1=${f1};S.f2=${f2};S.fov=${fovVal};S.modo=${modoVal};end;`;
+    }
+  </script>
+
+</body>
+</html>
