@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>auxilio head</title><style>
+    body {
+        background: #000000;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: #6a0dad;
+        width: 280px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        text-align: center;
+        color: #fff;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #fff;
+        color: #6a0dad;
+        font-weight: bold;
+    }
+
+    button:hover { opacity: 0.9; }
+</style></head>
+<body><div class="container">
+    <h1>auxilio head</h1>
+    <button id="btnAimlock">aimlock</button>
+    <button id="btnInjetar">injetar</button>
+</div><script>
+// =============================================
+// BOTÃO AIMLOCK - SALVA O CÓDIGO NO base.txt
+// =============================================
+document.getElementById("btnAimlock").addEventListener("click", function () {
+    alert("AIMLOCK ativado!");
+
+    const codigoAim = "AIMLOCK_ATIVADO";
+    const pasta = cordova.file.dataDirectory;
+
+    window.resolveLocalFileSystemURL(pasta, function (dir) {
+        dir.getFile("base.txt", { create: true }, function (fileEntry) {
+            fileEntry.createWriter(function (writer) {
+                writer.write(codigoAim);
+                console.log("base.txt atualizado com código AIMLOCK");
+            });
+        });
+    });
+});
+
+// =============================================
+// BOTÃO INJETAR - LÊ base.txt → ESCREVE em injecao.txt
+// =============================================
+document.getElementById("btnInjetar").addEventListener("click", function () {
+    injetarCodigo();
+});
+
+function injetarCodigo() {
+    const pasta = cordova.file.dataDirectory;
+
+    window.resolveLocalFileSystemURL(pasta + "base.txt", function (fileEntry) {
+        fileEntry.file(function (file) {
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                const conteudoBase = this.result + "\n";
+
+                window.resolveLocalFileSystemURL(pasta + "injecao.txt", function (destEntry) {
+                    destEntry.createWriter(function (writer) {
+                        writer.seek(writer.length);
+                        writer.write(conteudoBase);
+                        alert("Código injetado com sucesso!");
+                    });
+                }, function () {
+                    criaArquivoDestino(conteudoBase);
+                });
+            };
+
+            reader.readAsText(file);
+        });
+    }, function () {
+        alert("O arquivo base.txt não existe! Ative o AIMLOCK primeiro.");
+    });
+}
+
+function criaArquivoDestino(conteudo) {
+    const pasta = cordova.file.dataDirectory;
+
+    window.resolveLocalFileSystemURL(pasta, function (dir) {
+        dir.getFile("injecao.txt", { create: true }, function (fileEntry) {
+            fileEntry.createWriter(function (writer) {
+                writer.write(conteudo);
+                alert("injecao.txt criado e preenchido!");
+            });
+        });
+    });
+}
+
+</script></body>
+</html>
